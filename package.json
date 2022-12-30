@@ -1,0 +1,23 @@
+{
+  "name": "cli-auth-2fa",
+  "version": "1.0.0",
+  "description": "CLI based 2FA app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerrymannel/cli-auth-2fa.git"
+  },
+  "keywords": [],
+  "author": "Jerry M.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerrymannel/cli-auth-2fa/issues"
+  },
+  "homepage": "https://github.com/jerrymannel/cli-auth-2fa#readme",
+  "dependencies": {
+    "node-2fa": "^2.0.3"
+  }
+}
