@@ -1,5 +1,4 @@
 const twofactor = require("node-2fa");
-const path = require("path");
 const colors = require('@colors/colors');
 
 function stringComparison(a, b) {
@@ -10,7 +9,14 @@ function stringComparison(a, b) {
 	return 0;
 }
 
-const data = require("./db.json").sort(stringComparison)
+const data = require("./db.json").map(d => {
+	let link = new URL(d)
+	return {
+		name: decodeURIComponent(link.pathname.split("/")[1]),
+		issuer: link.searchParams.get("issuer") || "---",
+		secret: link.searchParams.get("secret")
+	}
+}).sort(stringComparison);
 
 let issuerLength = 0
 let nameLength = 0
@@ -30,30 +36,31 @@ function padding(s, max) {
 }
 
 function padNum(num, size) {
-  num = num.toString();
-  while (num.length < size) num = "0" + num;
-  return num;
+	num = num.toString();
+	while (num.length < size) num = "0" + num;
+	return num;
 }
 
-function draw(s,m,e){
+function draw(s, m, e) {
 	let i = 0;
 	let mm = "";
-	while(i < totalLength){
+	while (i < totalLength) {
 		mm += m;
 		i++;
 	}
 	console.log(`${s}${mm}${e}`);
 }
 
-function regenerate() {
+function generate() {
 	data.forEach((d, index) => {
-		let link = new URL(d.url)
-		let newToken = twofactor.generateToken(link.searchParams.get("secret"));
+		let newToken = twofactor.generateToken(d.secret);
 		console.log(`│ ${colors.green(padNum(index + 1, 2))} │ ${padding(d.issuer, issuerLength)} │ ${padding(d.name, nameLength)} │ ${colors.yellow(newToken.token)} │`)
 	});
 }
-draw("┌","─","┐")
-regenerate()
-draw("└","─","┘")
+draw("┌", "─", "┐")
+console.log(`│ ## │ ${padding("Issuer", issuerLength)} │ ${padding("Name", nameLength)} │ ${padding("Token", 6)} │`)
+draw("├", "─", "┤")
+generate()
+draw("└", "─", "┘")
 
-// setInterval(regenerate, 1000)
+// setInterval(generate, 1000)
