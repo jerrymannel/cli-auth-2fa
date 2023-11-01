@@ -29,7 +29,7 @@ data.forEach(d => {
 	if (d.issuer.length > issuerLength) issuerLength = d.issuer.length
 })
 
-const totalLength = issuerLength + nameLength + 6 + 2 + 11
+const totalLength = issuerLength + nameLength + 2 + 11
 
 function padding(s, max) {
 	while (s.length < max) {
@@ -65,20 +65,19 @@ function goUp() {
 function generate() {
 	// draw("┌", "─", "┐")
 	draw("─", "─", "─")
-	console.log(`   ##  ${padding("Issuer", issuerLength)}  ${padding("Token", 6)}  ${padding("Name", nameLength)}`)
+	console.log(`   ##  ${padding(" Issuer", issuerLength)}  Name`)
 	// draw("├", "─", "┤")
 	draw("─", "─", "─")
 	data.forEach((d, index) => {
 		let newToken = twofactor.generateToken(d.secret);
-		let position = colors.green(padNum(index + 1, 2));
+		let position = colors.red(padNum(index + 1, 2));
 		let issuer = padding(d.issuer, issuerLength);
-		let token = `  ${colors.yellow(newToken.token)}  `;
-		let name = padding(d.name, nameLength);
+		let name = d.name;
 		if (index == cursorPosition) {
 			selectedToken = newToken.token;
 			token = `[ ${colors.yellow(newToken.token)} ]`;
-		}
-		console.log(`   ${position}  ${issuer}  ${token}  ${name}   `)
+			console.log(`   ${position}  ${colors.yellow.underline.inverse(" ")}${colors.yellow.underline.inverse(issuer)}${colors.yellow.underline.inverse("  ")}${colors.yellow.underline.inverse(name)}${colors.yellow.underline.inverse("  ")}`)
+		} else console.log(`   ${position}   ${issuer}  ${colors.dim(name)}   `)
 	});
 	// draw("└", "─", "┘")
 	draw("─", "─", "─")
@@ -95,7 +94,7 @@ stdin.on('data', function (key) {
 	if (key === '03') process.exit();
 
 	if (key === '0d') {
-		console.log(`Copied ${selectedToken} !!`);
+		console.log(`\n\t${colors.red(selectedToken)}\n`);
 		var proc = require('child_process').spawn('pbcopy');
 		proc.stdin.write(selectedToken); proc.stdin.end();
 		process.exit();
