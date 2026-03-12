@@ -20,7 +20,7 @@ const getPackageInfo = () => {
 		if (existsSync(pkgPath)) {
 			return JSON.parse(readFileSync(pkgPath, 'utf8'));
 		}
-		return { version: '1.3.0' }; // Hardcoded fallback
+		return { version: '1.4.0' }; // Hardcoded fallback
 	}
 };
 
