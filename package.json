@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "CLI based 2FA app",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +20,14 @@
   "homepage": "https://github.com/jerrymannel/cli-auth-2fa#readme",
   "dependencies": {
     "@colors/colors": "^1.5.0",
+    "@inquirer/core": "^1.0.0",
+    "@inquirer/search": "^3.0.0",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "inquirer": "^9.0.0",
+    "jimp": "^0.22.12",
     "node-2fa": "^2.0.3",
-    "progress": "^2.0.3"
+    "progress": "^2.0.3",
+    "qrcode": "^1.5.4"
   }
 }
