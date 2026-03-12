@@ -11,16 +11,32 @@ import { MultiFormatReader, BinaryBitmap, HybridBinarizer, RGBLuminanceSource } 
 import { createPrompt, useState, useKeypress, useMemo, usePrefix, makeTheme } from '@inquirer/core';
 import colors from '@colors/colors/safe.js';
 
-const getDBPath = () => {
+const getPackageInfo = () => {
 	try {
-		const __filename = fileURLToPath(import.meta.url);
-		return join(dirname(__filename), 'db.json');
+		const pkgPath = join(dirname(fileURLToPath(import.meta.url)), 'package.json');
+		return JSON.parse(readFileSync(pkgPath, 'utf8'));
 	} catch (e) {
-		// Fallback for packaged/bundled CJS environments
-		return join(dirname(process.execPath), 'db.json');
+		const pkgPath = join(dirname(process.execPath), 'package.json');
+		if (existsSync(pkgPath)) {
+			return JSON.parse(readFileSync(pkgPath, 'utf8'));
+		}
+		return { version: '1.3.0' }; // Hardcoded fallback
 	}
 };
-const DB_PATH = getDBPath();
+
+const getPath = (filename) => {
+	try {
+		const __filename = fileURLToPath(import.meta.url);
+		return join(dirname(__filename), filename);
+	} catch (e) {
+		return join(dirname(process.execPath), filename);
+	}
+};
+
+const pkg = getPackageInfo();
+const VERSION = pkg.version;
+const DB_PATH = getPath('db.json');
+const VERSION_STR = `v${VERSION || '1.3.0'}`;
 
 // ── helpers (kept from original) ──────────────────────────────────────────────
 
@@ -149,7 +165,8 @@ const mainPrompt = createPrompt((config, done) => {
 		? colors.underline(input + (Math.floor(Date.now() / 500) % 2 === 0 ? '_' : ' '))
 		: colors.dim(input || '(hit ESC for command mode)');
 
-	let output = colors.bold(searchLabel) + searchContent + '\n';
+	let output = colors.bold.yellow(` CLI Auth 2FA ${VERSION_STR}\n`);
+	output += colors.bold(searchLabel) + searchContent + '\n';
 	output += colors.dim('  ' + '─'.repeat(50)) + '\n';
 	output += colors.bold(`  #   ${padding('Issuer', 20)}  ${'Name'}\n`);
 	output += colors.dim('  ' + '─'.repeat(50)) + '\n';
@@ -186,7 +203,7 @@ const mainPrompt = createPrompt((config, done) => {
 async function main() {
 	while (true) {
 		const entries = loadEntries();
-		console.log("\n\n");
+		console.log("\n");
 
 		let selected;
 		try {
