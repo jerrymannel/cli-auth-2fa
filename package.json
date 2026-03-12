@@ -1,6 +1,6 @@
 {
   "name": "cli-auth-2fa",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "CLI based 2FA app",
   "main": "app.js",
   "type": "module",
